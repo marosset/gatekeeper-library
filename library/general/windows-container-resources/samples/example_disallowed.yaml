@@ -4,11 +4,33 @@ metadata:
   name: nanoserver-as-containeruser
 spec:
   containers:
-  - name: ping-loop
+  - name: ping-loop-no-limits
     image: mcr.microsoft.com/windows/nanoserver:1809
     command:
       - "ping"
       - "-t"
       - "127.0.0.1"
+  - name: ping-loop-partial-limits
+    image: mcr.microsoft.com/windows/nanoserver:1809
+    command:
+      - "ping"
+      - "-t"
+      - "127.0.0.1"
+    resources:
+      limits:
+        mem: 250m
+  - name: ping-loop-mismatched-requests
+    image: mcr.microsoft.com/windows/nanoserver:1809
+    command:
+      - "ping"
+      - "-t"
+      - "127.0.0.1"
+    resources:
+      limits:
+        cpu: 0.5
+        mem: 500m
+      requests:
+        cpu: 0.25
+        mem: 250m
   nodeSelector:
     "kubernetes.io/os": windows
