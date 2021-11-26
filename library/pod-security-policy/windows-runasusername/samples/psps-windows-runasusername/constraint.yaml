@@ -5,8 +5,8 @@ metadata:
 spec:
   match:
     kinds:
-      - apiGroups: [""]
-        kinds: ["Pod"]
+      - apiGroups: ["","apps","batch"]
+        kinds: ["Pod","Deployment","StatefulSet","ReplicationController","ReplicaSet","DaemonSet","Job"]
     namespaces:
       - "default"
   parameters:
