@@ -25,6 +25,19 @@ get_username(c) = out {
     out = un
 }
 
+# returns runAsUserName if set for container
+get_username(c) = out {
+    un := c.securityContext.windowsOptions.runAsUserName
+    out = un
+}
+
+# returns runAsUserName if NOT set for container but IS set for pod
+get_username(c) = out {
+    not has_username_set_for_container(c)
+    un := input.review.object.spec.template.spec.securityContext.windowsOptions.runAsUserName
+    out = un
+}
+
 has_username_set_for_container(c) {
     c.securityContext.windowsOptions.runAsUserName
 }
@@ -34,8 +47,17 @@ isWindowsPod {
     ns["kubernetes.io/os"] == "windows"
 }
 
+isWindowsPod {
+    ns := input.review.object.spec.template.spec.nodeSelector
+    ns["kubernetes.io/os"] == "windows"
+}
+
 input_containers[c] {
     c := input.review.object.spec.containers[_]
+}
+
+input_containers[c] {
+    c := input.review.object.spec.template.spec.containers[_]
 }
 
 input_containers[c] {
